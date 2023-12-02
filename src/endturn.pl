@@ -20,13 +20,6 @@ writeListTail([H|T]) :-
     write(H),
     writeListTail(T).
 
-
-% Fakta tentang tentara tambahan dari wilayah
-additional_troops(p1, TotalAdditionalTroops).
-additional_troops(p2, TotalAdditionalTroops).
-additional_troops(p3, TotalAdditionalTroops).
-additional_troops(p4, TotalAdditionalTroops).
-
 % Fakta tentang tentara bonus dari wilayah
 bonus_troops('NA', 3).
 bonus_troops('E', 3).
@@ -42,10 +35,10 @@ endTurn :-
     endInitialTurn,
     currentPlayer(NextPlayerId),
     player(NextPlayerId, PlayerName, TotalTerritories, TotalActiveTroops, TotalAddTroops, _),
-    format('Player ~w mengakhiri giliran.~n', [OldPlayerName]),
-    format('Sekarang giliran Player ~w!~n', [PlayerName]),
+    format('Player ~w mengakhiri giliran.~n~n', [OldPlayerName]),
+    format('Sekarang giliran Player ~w!~n~n', [PlayerName]),
     playerTroops(NextPlayerId, TotalTroops),
-    TotalAdditionalTroops is (TotalTerritories / 2),
+    TotalAdditionalTroops is (TotalTerritories // 2),
     NewTotalTroops = (TotalTroops - TotalAdditionalTroops),
     retract(playerTroops(PlayerId, TotalTroops)),
     assertz(playerTroops(PlayerId, NewTotalTroops)),
