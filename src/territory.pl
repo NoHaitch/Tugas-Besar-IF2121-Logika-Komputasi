@@ -33,12 +33,12 @@ locationDetail(af1, 'AF1', 'Nigeria', ['Germany', 'Kenya', 'Morocco', 'Argentina
 locationDetail(af2, 'AF2', 'Kenya', ['Poland', 'France', 'Nigeria', 'Morocco']).
 locationDetail(af3, 'AF3', 'Morocco', ['Nigeria', 'Kenya']).
 
-continent(northamerica, [na1, na2, na3, na4, na5]).
-continent(southamerica, [sa1, sa2]).
-continent(europe, [e1, e2, e3, e4, e5]).
-continent(asia, [a1, a2, a3, a4, a5, a6, a7]).
-continent(australia, [au1, au2]).
-continent(africa, [af1, af2]).
+continent('North America', [na1, na2, na3, na4, na5]).
+continent('South America', [sa1, sa2]).
+continent('Europe', [e1, e2, e3, e4, e5]).
+continent('Asia', [a1, a2, a3, a4, a5, a6, a7]).
+continent('Australia', [au1, au2]).
+continent('Africa', [af1, af2]).
 
 :- dynamic(pemilik/2).
 

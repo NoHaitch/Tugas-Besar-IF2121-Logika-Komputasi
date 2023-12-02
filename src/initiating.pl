@@ -174,7 +174,8 @@ getPlayerNames(PlayerAmount, N) :-
     N < PlayerAmount, 
     format('Masukkan nama pemain ~w: ', [N]), 
     read(PlayerName), 
-    assertz(player(N, PlayerName, 0, 0, 0, 0)), 
+    assertz(player(N, PlayerName, 0, 0, 0, 0)),
+    assertz(player_territories(PlayerName, [], [], [], [], [], [])),
     NewN is (N + 1), 
     getPlayerNames(PlayerAmount, NewN).
 
@@ -182,7 +183,8 @@ getPlayerNames(PlayerAmount, N) :-
     N = PlayerAmount, 
     format('Masukkan nama pemain ~w: ', [N]),
     read(PlayerName), nl,
-    assertz(player(N, PlayerName, 0, 0, 0, 0)).
+    assertz(player(N, PlayerName, 0, 0, 0, 0)),
+    assertz(player_territories(PlayerName, [], [], [], [], [], [])).
 
 /* Role for all player */
 getAllRoles(Roles) :-
