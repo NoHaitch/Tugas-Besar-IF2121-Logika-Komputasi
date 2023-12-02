@@ -74,11 +74,11 @@ battle(IDPlayer, AttackerTerritory, DefenderTerritory, NumAttacker, NumDefender,
     throwDice(NumAttacker, AttackerDice, Attacker),
     (
         RiskCardAttacker =:= 2 ->
-        write('Player '), write(Attacker), write(' memiliki risk card DISEASE.~nSemua hasil lemparan dadu saat penyerangan dan pertahanan akan bernilai 1.~n'), nl,
+        write('Player '), write(Attacker), write(' memiliki risk card DISEASE.Semua hasil lemparan dadu saat penyerangan dan pertahanan akan bernilai 1.'), nl,
         retract(player(IDPlayer, Attacker, _, _, _, RiskCard)), asserta(player(_, Attacker, _, _, _, 0))
     ;
         RiskCardAttacker =:= 5 ->
-        write('Player '), write(Attacker), write(' memiliki risk card SUPER SOLDIER SERUM.~nSemua hasil lemparan dadu saat penyerangan dan pertahanan akan bernilai 6.~n'), nl,
+        write('Player '), write(Attacker), write(' memiliki risk card SUPER SOLDIER SERUM. Semua hasil lemparan dadu saat penyerangan dan pertahanan akan bernilai 6.'), nl,
         retract(player(IDPlayer, Attacker, _, _, _, RiskCard)), asserta(player(_, Attacker, _, _, _, 0))
     ;
         write('')
@@ -92,11 +92,11 @@ battle(IDPlayer, AttackerTerritory, DefenderTerritory, NumAttacker, NumDefender,
     throwDice(NumDefender, DefenderDice, Defender),
     (
         RiskCardDefender =:= 5 ->
-        write('Player '), write(Defender), format(' memiliki risk card DISEASE.~nSemua hasil lemparan dadu saat penyerangan dan pertahanan akan bernilai 1.~n'), nl,
+        write('Player '), write(Defender), write(' memiliki risk card DISEASE. Semua hasil lemparan dadu saat penyerangan dan pertahanan akan bernilai 1.'), nl,
         retract(player(_, Defender, _, _, _, RiskCardAttacker)), asserta(player(_, Defender, _, _, _, 0))
     ;
         RiskCardDefender =:= 2 ->
-        write('Player '), write(Defender), format(' memiliki risk card SUPER SOLDIER SERUM.~nSemua hasil lemparan dadu saat penyerangan dan pertahanan akan bernilai 6.~n'), nl,
+        write('Player '), write(Defender), write(' memiliki risk card SUPER SOLDIER SERUM. Semua hasil lemparan dadu saat penyerangan dan pertahanan akan bernilai 6.'), nl,
         retract(player(_, Defender, _, _, _, RiskCardDefender)), asserta(player(_, Defender, _, _, _, 0))
     ;
         write('')
