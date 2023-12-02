@@ -75,15 +75,34 @@ countTerritories(Name, Result) :-
     length(OwnedAreas, Result).
 
 % Fakta tentang pemain dan wilayah yang dimiliki
-player_territories(Player, NA, E, A, SA, AU, AF) :-
-    getAllOwnedTerritory(PlayerId, Result),
-    (sub_atom(Territory, 0, 2, _, 'na') -> append([Territory], NA, NewNA), player_territories(Player, NewNA, E, A, SA, AU, AF);   
-     sub_atom(Territory, 0, 1, _, 'e') -> append([Territory], E, NewE), player_territories(Player, NA, NewE, A, SA, AU, AF);   
-     sub_atom(Territory, 0, 1, _, 'a') -> append([Territory], A, NewA), player_territories(Player, NA, E, NewA, SA, AU, AF);   
-     sub_atom(Territory, 0, 2, _, 'sa') -> append([Territory], SA, NewSA), player_territories(Player, NA, E, A, NewSA, AU, AF);   
-     sub_atom(Territory, 0, 2, _, 'au') -> append([Territory], AU, NewAU), player_territories(Player, NA, E, A, SA, NewAU, AF);   
-     sub_atom(Territory, 0, 2, _, 'af') -> append([Territory], AF, NewAF), player_territories(Player, NA, E, A, SA, AU, NewAF)
+player_territories(PlayerId, [], [], [], [], [], []).
+
+group_territories([], [], [], [], [], [], []).
+group_territories([Territory|Rest], NA, E, A, SA, AU, AF) :-
+    (   sub_atom(Territory, 0, 2, _, 'na') -> 
+        append([Territory], NA, NewNA),
+        group_territories(Rest, NewNA, E, A, SA, AU, AF)
+    ;   sub_atom(Territory, 0, 1, _, 'e') -> 
+        append([Territory], E, NewE),
+        group_territories(Rest, NA, NewE, A, SA, AU, AF)
+    ;   sub_atom(Territory, 0, 1, _, 'a') -> 
+        append([Territory], A, NewA),
+        group_territories(Rest, NA, E, NewA, SA, AU, AF)
+    ;   sub_atom(Territory, 0, 2, _, 'sa') -> 
+        append([Territory], SA, NewSA),
+        group_territories(Rest, NA, E, A, NewSA, AU, AF)
+    ;   sub_atom(Territory, 0, 2, _, 'au') -> 
+        append([Territory], AU, NewAU),
+        group_territories(Rest, NA, E, A, SA, NewAU, AF)
+    ;   sub_atom(Territory, 0, 2, _, 'af') -> 
+        append([Territory], AF, NewAF),
+        group_territories(Rest, NA, E, A, SA, AU, NewAF)
     ).
+
+% Fungsi tentang pemain dan wilayah yang dimiliki
+player_territories(PlayerId, NA, E, A, SA, AU, AF) :-
+    getAllOwnedTerritory(PlayerId, Result),
+    group_territories(Result, NA, E, A, SA, AU, AF).
 
 % Fungsi untuk menampilkan kondisi pemain
 checkPlayerDetail(Player) :-
