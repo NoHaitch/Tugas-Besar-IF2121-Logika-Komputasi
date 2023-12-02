@@ -92,5 +92,5 @@ checkLocationDetail(X) :-
     write('Kode                 : '), write(Code), nl,
     write('Nama                 : '), write(Name), nl,
     write('Pemilik              : '), pemilik(X, Pemilik), write(Pemilik), nl,
-    write('Total Tentara        : '), totalTroops(Code, Tentara), write(Tentara), nl,
+    write('Total Tentara        : '), totalTroops(X, Tentara), write(Tentara), nl,
     write('Tetangga             : '), writeList(Tetangga), nl.
