@@ -4,7 +4,6 @@
 :- dynamic(bonus_troops/2).
 :- dynamic(currentPlayer/1).
 
-
 writeList([]) :-
     write('').
 
@@ -23,11 +22,11 @@ writeListTail([H|T]) :-
     write(H),
     writeListTail(T).
 
-% Fakta tentang pemain
-
-updatedTroops(PlayerNumber) : -
-    retract(player(PlayerNumber, Name, TotalTerritories, TotalActiveTroops, TotalAddTroops, RiskCards)),
-    NewTotalAddTroops is TotalTerritories // 2 + TotalBonusTroops,
+% Fakta tentang pemain dan wilayah yang dimiliki
+player_territories(p1, [], [], [], [], [], []).
+player_territories(p2, [], [], [], [], [], []).
+player_territories(p3, [], [], [], [], [], []).
+player_territories(p4, [], [], [], [], [], []).
 
 % Fakta tentang tentara tambahan dari wilayah
 additional_troops(p1, TotalAdditionalTroops).
@@ -51,10 +50,8 @@ count([_H|T], Count) :-
 
 checkContinent(Player, Areas, Count) :- 
     findall(Area, pemilik(Area, Player), OwnedAreas),
-    length(OwnedAreas, Count)
-    .
+    length(OwnedAreas, Count).
     
-
 checkAreasAvail(Player) :- 
     continent(europe, Areas),
     checkContinent(Player, Areas, Count),
@@ -65,19 +62,17 @@ checkAreasAvail(Player) :-
         continent(northamerica, Areas),
         checkContinent(Player, Areas, Count),
     (Count > 0 -> format('North America, ', []) ; fail),
-    
         continent(southamerica, Areas),
         checkContinent(Player, Areas, Count),
     (Count > 0 -> format('South America, ', []) ; fail),
-    
         continent(africa, Areas),
         checkContinent(Player, Areas, Count),
     (Count > 0 -> format('Africa', []) ; fail),
-    
         continent(australia, Areas),
         checkContinent(Player, Areas, Continent),
-        
-        (Count > 0 -> format('Australia', []) ; fail).
+    (Count > 0 -> format('Australia', []) ; fail).
+        continent(australia, Areas),
+        checkContinent(Player, Areas, Continent),
 
 
 countTerritories(Name, Result) :- 
@@ -88,7 +83,14 @@ countTerritories(Name, Result) :-
 % Fungsi untuk menampilkan kondisi pemain
 checkPlayerDetail(Player) :-
     player(Player, Name, TotalTerritories, TotalActiveTroops, TotalAddTroops, RiskCards),
+    player_territories(Player, NA, E, A, SA, AU, AF).
     write('Nama                  : '), write(Name), nl,
+    write('Benua                 : '), ((count(NA, X1), X1 \= 0, write('Amerika Utara ')), 
+                                        (count(E, X2), X2 \= 0, write('Eropa ')),
+                                        (count(A, X3), X3 \= 0, write('Asia ')),
+                                        (count(SA, X4), X4 \= 0, write('Amerika Selatan ')),
+                                        (count(AU, X5), X5 \= 0, write('Australia ')),
+                                        (count(AF, X6), X6 \= 0, write('Afrika '))), nl, 
     write('Total Wilayah         : '), countTerritories(Name, Result), write(Result), nl,
     write('Total Tentara Aktif   : '), write(TotalActiveTroops), nl,
     write('Total Tentara Tambahan: '), write(TotalAddTroops), nl.
@@ -144,6 +146,7 @@ benuaAF(AF) :- count(AF, Value6), Value6 =:= 0.
 % Fungsi untuk menampilkan wilayah yang dikuasai oleh pemain
 checkPlayerTerritories(Player) :-
     player(Player, Name, TotalTerritories, TotalActiveTroops, TotalAddTroops, RiskCards),
+    player_territories(Player, NA, E, A, SA, AU, AF), 
     write('Nama              : '), write(Name), nl, nl,
     benuaNA(NA), nl,
     benuaE(E), nl,
@@ -155,6 +158,7 @@ checkPlayerTerritories(Player) :-
 % Fungsi untuk menampilkan jumlah tentara tambahan pada giliran selanjutnya
 checkIncomingTroops(Player) :-
     player(Player, Name, TotalTerritories, TotalActiveTroops, TotalAddTroops, Risk),
+    player_territories(Player, NA, E, A, SA, AU, AF),
     findall(BonusTroops,
             (additional_troops(Player, Continent, Bonus),
              countPlayerTerritories(Player, Continent, PlayerTerritories),
