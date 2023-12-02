@@ -78,6 +78,9 @@ placeTroops(Territory, Troops) :-
                     (currentPlayer(PlayerIdCek), playerTroops(PlayerIdCek, 0) ->
                         write('\nSeluruh pemain telah meletakkan sisa tentara.\n'),
                         write('\nMemulai Permainan\n\n'),
+                        currentPlayer(NewPlayerId),
+                        player(NewPlayerId, NewPlayerName, _, _, _, _),
+                        format('Sekarang giliran Player ~w!~n~n',[NewPlayerName]),
                         !
                     ;
                         currentPlayer(NewPlayerId),
@@ -116,6 +119,9 @@ placeAutomatic :-
                 (currentPlayer(PlayerIdCek), playerTroops(PlayerIdCek, 0) ->
                     write('\nSeluruh pemain telah meletakkan sisa tentara.\n'),
                     write('\nMemulai Permainan\n\n'),
+                    currentPlayer(NewPlayerId),
+                    player(NewPlayerId, NewPlayerName, _, _, _, _),
+                    format('Sekarang giliran Player ~w!~n~n',[NewPlayerName]),
                     !
                 ;
                     currentPlayer(NewPlayerId),
