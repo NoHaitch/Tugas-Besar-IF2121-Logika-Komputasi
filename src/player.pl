@@ -3,6 +3,7 @@
 :- dynamic(additional_troops/2).
 :- dynamic(bonus_troops/2).
 :- dynamic(currentPlayer/1).
+:- dynamic(player_territories/7).
 
 writeList([]) :-
     write('').
@@ -21,12 +22,6 @@ writeListTail([H|T]) :-
     write(', '),
     write(H),
     writeListTail(T).
-
-% Fakta tentang pemain dan wilayah yang dimiliki
-player_territories(p1, [], [], [], [], [], []).
-player_territories(p2, [], [], [], [], [], []).
-player_territories(p3, [], [], [], [], [], []).
-player_territories(p4, [], [], [], [], [], []).
 
 % Fakta tentang tentara tambahan dari wilayah
 additional_troops(p1, TotalAdditionalTroops).
@@ -79,11 +74,21 @@ countTerritories(Name, Result) :-
     findall(Area, pemilik(Area, Name), OwnedAreas),
     length(OwnedAreas, Result).
 
+% Fakta tentang pemain dan wilayah yang dimiliki
+player_territories(Player, NA, E, A, SA, AU, AF) :-
+    getAllOwnedTerritory(PlayerId, Result),
+    (sub_atom(Territory, 0, 2, _, 'na') -> append([Territory], NA, NewNA), player_territories(Player, NewNA, E, A, SA, AU, AF);   
+     sub_atom(Territory, 0, 1, _, 'e') -> append([Territory], E, NewE), player_territories(Player, NA, NewE, A, SA, AU, AF);   
+     sub_atom(Territory, 0, 1, _, 'a') -> append([Territory], A, NewA), player_territories(Player, NA, E, NewA, SA, AU, AF);   
+     sub_atom(Territory, 0, 2, _, 'sa') -> append([Territory], SA, NewSA), player_territories(Player, NA, E, A, NewSA, AU, AF);   
+     sub_atom(Territory, 0, 2, _, 'au') -> append([Territory], AU, NewAU), player_territories(Player, NA, E, A, SA, NewAU, AF);   
+     sub_atom(Territory, 0, 2, _, 'af') -> append([Territory], AF, NewAF), player_territories(Player, NA, E, A, SA, AU, NewAF)
+    ).
 
 % Fungsi untuk menampilkan kondisi pemain
 checkPlayerDetail(Player) :-
     player(Player, Name, TotalTerritories, TotalActiveTroops, TotalAddTroops, RiskCards),
-    player_territories(Player, NA, E, A, SA, AU, AF).
+    player_territories(Player, NA, E, A, SA, AU, AF),
     write('Nama                  : '), write(Name), nl,
     write('Benua                 : '), ((count(NA, X1), X1 \= 0, write('Amerika Utara ')), 
                                         (count(E, X2), X2 \= 0, write('Eropa ')),
