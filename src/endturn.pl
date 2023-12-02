@@ -127,7 +127,7 @@ checkEOwnership:-
         false
     ).
 
-checkAFOwnership:-
+checkAFOwnership :-
     currentPlayer(CurrentPlayer),
     player(CurrentPlayer, PlayerName, _, _, _, _),
     (   

@@ -29,6 +29,7 @@ additional_troops(p2, TotalAdditionalTroops).
 additional_troops(p3, TotalAdditionalTroops).
 additional_troops(p4, TotalAdditionalTroops).
 
+
 % Fakta tentang tentara bonus dari wilayah
 bonus_troops('NA', 3).
 bonus_troops('E', 3).
@@ -74,48 +75,88 @@ countTerritories(Name, Result) :-
     findall(Area, pemilik(Area, Name), OwnedAreas),
     length(OwnedAreas, Result).
 
-% Fakta tentang pemain dan wilayah yang dimiliki
-player_territories(PlayerId, [], [], [], [], [], []).
+/*
+groupTerritories(Player) :-
+    player_territories(Player, A, B, C, D, E, F),
+    retract(player_territories(Player, A, B, C, D, E, F)),
+    player(ID, Player, TotalTerritories, TotalActiveTroops, TotalAddTroops, RiskCards),
+    getAllOwnedTerritory(ID, Territories),
+    update_territories(Territories, [], [], [], [], [], [], NewNA, NewE, NewA, NewSA, NewAU, NewAF),
+    assertz(player_territories(Player, NewA, NewSA, NewAU, NewNA, NewE, NewAF)).
 
-group_territories([], [], [], [], [], [], []).
-group_territories([Territory|Rest], NA, E, A, SA, AU, AF) :-
-    (   sub_atom(Territory, 0, 2, _, 'na') -> 
-        append([Territory], NA, NewNA),
-        group_territories(Rest, NewNA, E, A, SA, AU, AF)
-    ;   sub_atom(Territory, 0, 1, _, 'e') -> 
-        append([Territory], E, NewE),
-        group_territories(Rest, NA, NewE, A, SA, AU, AF)
-    ;   sub_atom(Territory, 0, 1, _, 'a') -> 
-        append([Territory], A, NewA),
-        group_territories(Rest, NA, E, NewA, SA, AU, AF)
-    ;   sub_atom(Territory, 0, 2, _, 'sa') -> 
-        append([Territory], SA, NewSA),
-        group_territories(Rest, NA, E, A, NewSA, AU, AF)
-    ;   sub_atom(Territory, 0, 2, _, 'au') -> 
-        append([Territory], AU, NewAU),
-        group_territories(Rest, NA, E, A, SA, NewAU, AF)
-    ;   sub_atom(Territory, 0, 2, _, 'af') -> 
-        append([Territory], AF, NewAF),
-        group_territories(Rest, NA, E, A, SA, AU, NewAF)
-    ).
+update_territories([], NA, E, A, SA, AU, AF, NA, E, A, SA, AU, AF).
+update_territories([Territory|Rest], NA, E, A, SA, AU, AF, NewNA, NewE, NewA, NewSA, NewAU, NewAF) :-
+    pemilik(Territory, Player),
+    (
+        (northAmerica(Territory) -> append(NA, [Territory], TempNA), NewNA = TempNA),
+        (asia(Territory) -> append(A, [Territory], TempA), NewA = TempA,
+        (europe(Territory) -> append(E, [Territory], TempE), NewE = TempE),
+        (australia(Territory) -> append(AU, [Territory], TempAU), NewAU = TempAU ),
+        (africa(Territory) -> append(AF, [Territory], TempAF), NewAF = TempAF ),
+        (southAmerica(Territory) -> append(SA, [Territory], TempSA), NewSA = TempSA)
+    ),
+    update_territories(Rest, NewNA, NewE, NewA, NewSA, NewAU, NewAF, NewNA, NewE, NewA, NewSA, NewAU, NewAF). */
 
-% Fungsi tentang pemain dan wilayah yang dimiliki
-player_territories(PlayerId, NA, E, A, SA, AU, AF) :-
-    getAllOwnedTerritory(PlayerId, Result),
-    group_territories(Result, NA, E, A, SA, AU, AF).
+    /*
+    forall(member(Territory, Territories),
+        (forall(
+            ((australia(Territory), pemilik(Territory, Player)), append(AU, [Territory], AU))
+    );
+        forall(
+            ((africa(Territory), pemilik(Territory, Player)), append(AF, [Territory], AF))
+    );
+        forall(
+            ((asia(Territory), pemilik(Territory, Player)), append(A, [Territory], A))
+    );
+    forall(
+    ((europe(Territory), pemilik(Territory, Player)), append(E, [Territory], E))
+    );
+    forall(
+    ((northamerica(Territory), pemilik(Territory, Player)), append(NA, [Territory], NA))
+    );
+    forall(
+    ((southamerica(Territory), pemilik(Territory, Player)), append(SA, [Territory], SA))
+    ))), */
+
+
+checkAUOwnershipTest(PlayerID) :-
+    player(PlayerID, PlayerName, _, _, _, _),
+    (pemilik(Territory, PlayerName), australia(Territory), !)
+    .
+checkNAOwnershipTest(PlayerID) :-
+    player(PlayerID, PlayerName, _, _, _, _),
+    (pemilik(Territory, PlayerName), northAmerica(Territory), !)
+    .
+checkAFOwnershipTest(PlayerID) :-
+    player(PlayerID, PlayerName, _, _, _, _),
+    (pemilik(Territory, PlayerName), africa(Territory), !)
+    .
+checkAOwnershipTest(PlayerID) :-
+    player(PlayerID, PlayerName, _, _, _, _),
+    (pemilik(Territory, PlayerName), asia(Territory), !)
+    .
+checkSAOwnershipTest(PlayerID) :-
+    player(PlayerID, PlayerName, _, _, _, _),
+    (pemilik(Territory, PlayerName), southAmerica(Territory), !)
+    .
+checkEOwnershipTest(PlayerID) :-
+    player(PlayerID, PlayerName, _, _, _, _),
+    (pemilik(Territory, PlayerName), europe(Territory), !)
+    .
+
 
 % Fungsi untuk menampilkan kondisi pemain
 checkPlayerDetail(Player) :-
     player(Player, Name, TotalTerritories, TotalActiveTroops, TotalAddTroops, RiskCards),
-    player_territories(Player, NA, E, A, SA, AU, AF),
+    player_territories(Name, NA, E, A, SA, AU, AF),
     write('Nama                  : '), write(Name), nl,
-    write('Benua                 : '), ((count(NA, X1), X1 \= 0, write('Amerika Utara ')), 
-                                        (count(E, X2), X2 \= 0, write('Eropa ')),
-                                        (count(A, X3), X3 \= 0, write('Asia ')),
-                                        (count(SA, X4), X4 \= 0, write('Amerika Selatan ')),
-                                        (count(AU, X5), X5 \= 0, write('Australia ')),
-                                        (count(AF, X6), X6 \= 0, write('Afrika '))), nl, 
-    write('Total Wilayah         : '), countTerritories(Name, Result), write(Result), nl,
+    write('Benua                 : '), (checkNAOwnershipTest(Player) -> write('Amerika Utara '); write('')),
+                                        (checkEOwnershipTest(Player) -> write('Eropa ') ; write('')),
+                                        (checkAOwnershipTest(Player) -> write('Asia ') ; write('')),
+                                        (checkSAOwnershipTest(Player) -> write('Amerika Selatan ') ; write('')),
+                                        (checkAUOwnershipTest(Player) -> write('Australia ') ; write('')),
+                                        (checkAFOwnershipTest(Player) -> write('Afrika ') ; write('')),
+    write('Total Wilayah         : '), countTerritories(Name, Result) -> write(Result) ; write(''), nl,
     write('Total Tentara Aktif   : '), write(TotalActiveTroops), nl,
     write('Total Tentara Tambahan: '), write(TotalAddTroops), nl.
 
