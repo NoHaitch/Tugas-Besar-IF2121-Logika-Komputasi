@@ -21,12 +21,12 @@ writeListTail([H|T]) :-
     writeListTail(T).
 
 % Fakta tentang tentara bonus dari wilayah
-bonus_troops('NA', 3).
-bonus_troops('E', 3).
-bonus_troops('A', 5).
-bonus_troops('SA', 2).
-bonus_troops('AU', 1).
-bonus_troops('AF', 2).
+% bonus_troops('NA', 3).
+% bonus_troops('E', 3).
+% bonus_troops('A', 5).
+% bonus_troops('SA', 2).
+% bonus_troops('AU', 1).
+% bonus_troops('AF', 2).
 
 /* Fungsi untuk mengakhiri giliran */
 endTurn :-
@@ -36,11 +36,107 @@ endTurn :-
     currentPlayer(NextPlayerId),
     player(NextPlayerId, PlayerName, TotalTerritories, TotalActiveTroops, TotalAddTroops, _),
     format('Player ~w mengakhiri giliran.~n~n', [OldPlayerName]),
-    format('Sekarang giliran Player ~w!~n~n', [PlayerName]),
+    format('Sekarang giliran Player ~w!~n', [PlayerName]),
     playerTroops(NextPlayerId, TotalTroops),
-    TotalAdditionalTroops is (TotalTerritories // 2),
     NewTotalTroops = (TotalTroops - TotalAdditionalTroops),
+    getAdditionalTroops(TotalAdditionalTroops),
     retract(playerTroops(PlayerId, TotalTroops)),
     assertz(playerTroops(PlayerId, NewTotalTroops)),
     TotalAdd = (TotalBonusTroops + TotalAdditionalTroops),
-    format('Player ~w mendapatkan ~w tentara tambahan.~n', [PlayerName, TotalAdditionalTroops]).
+    format('Player ~w mendapatkan ~w tentara tambahan.~n~n', [PlayerName, TotalAdditionalTroops]).
+
+getAdditionalTroops(Result) :-
+    currentPlayer(PlayerId),
+    player(PlayerId, Name, TotalTerritories, _, _, _),
+    Result1 is TotalTerritories // 2,
+    (checkNAOwnership -> Result2 is Result1 + 3 ; Result2 is Result1),
+    (checkEOwnership -> Result3 is Result2 + 3 ; Result3 is Result2),
+    (checkAOwnership -> Result4 is Result3 + 5 ; Result4 is Result3),
+    (checkSAOwnership -> Result5 is Result4 + 2 ; Result5 is Result4),
+    (checkAUOwnership -> Result6 is Result5 + 1 ; Result6 is Result5),
+    (checkAFOwnership -> Result7 is Result6 + 2 ; Result7 is Result6),
+    Result is Result7.
+
+checkAUOwnership:-
+    currentPlayer(CurrentPlayer),
+    player(CurrentPlayer, PlayerName, _, _, _, _),
+    (   
+        forall(
+            (australia(Territory), pemilik(Territory, Owner), Owner \= PlayerName),
+            fail
+        )
+    ->
+        true
+    ;
+        false
+    ).
+
+checkNAOwnership:-
+    currentPlayer(CurrentPlayer),
+    player(CurrentPlayer, PlayerName, _, _, _, _),
+    (   
+        forall(
+            (northAmerica(Territory), pemilik(Territory, Owner), Owner \= PlayerName),
+            fail
+        )
+    ->
+        true
+    ;
+        false
+    ).
+
+checkAOwnership:-
+    currentPlayer(CurrentPlayer),
+    player(CurrentPlayer, PlayerName, _, _, _, _),
+    (   
+        forall(
+            (asia(Territory), pemilik(Territory, Owner), Owner \= PlayerName),
+            fail
+        )
+    ->
+        true
+    ;
+        false
+    ).
+
+checkSAOwnership:-
+    currentPlayer(CurrentPlayer),
+    player(CurrentPlayer, PlayerName, _, _, _, _),
+    (   
+        forall(
+            (southAmerica(Territory), pemilik(Territory, Owner), Owner \= PlayerName),
+            fail
+        )
+    ->
+        true
+    ;
+        false
+    ).
+
+checkEOwnership:-
+    currentPlayer(CurrentPlayer),
+    player(CurrentPlayer, PlayerName, _, _, _, _),
+    (   
+        forall(
+            (europe(Territory), pemilik(Territory, Owner), Owner \= PlayerName),
+            fail
+        )
+    ->
+        true
+    ;
+        false
+    ).
+
+checkAFOwnership:-
+    currentPlayer(CurrentPlayer),
+    player(CurrentPlayer, PlayerName, _, _, _, _),
+    (   
+        forall(
+            (africa(Territory), pemilik(Territory, Owner), Owner \= PlayerName),
+            fail
+        )
+    ->
+        true
+    ;
+        false
+    ).
