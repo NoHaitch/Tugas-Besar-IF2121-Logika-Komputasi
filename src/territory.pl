@@ -1,3 +1,7 @@
+initTerritory :-
+    assertz(listTerritory([na1,na2,na3])),
+    assertz(emptyTerritory([na1,na2,na3])).
+
 /* FAKTA */
 locationDetail(na1, 'NA1', 'Greenland', ['Amerika Serikat', 'Mexico']).
 locationDetail(na2, 'NA2', 'Amerika Serikat', ['Greenland', 'Canada', 'Cuba']).
