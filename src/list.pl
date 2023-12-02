@@ -40,16 +40,19 @@ getNumberList(Start, End, [Start | Rest]) :-
     Next is Start + 1,
     getNumberList(Next, End, Rest).
 
-/* For Pair Sorting */
-
-% sort_pairs([], _, _, []).
-% sort_pairs([X | Xs], [Y | Ys], [Index | Indices], [X-Index-Y | Rest]) :-
-%     sort_pairs(Xs, Ys, Indices, Rest).
-
-% group_pairs_by_key([], []).
-% group_pairs_by_key([X-Index-Y | Rest], [X-Group | GroupedRest]) :-
-%     group_pairs_by_key(Rest, GroupedRest, X, [Index-Y | Acc], Group),
-%     reverse(Acc, Group).
-
 removeElement(X, List, NewList) :-
     select(X, List, NewList).
+
+% Rule to get a random element from a list
+getRandomElement(List, RandomElement) :-
+    length(List, Length),
+    random(0, Length, Index),
+    nth0(Index, List, RandomElement).
+
+sort_pairs([], _, _, []).
+sort_pairs([X | Xs], [Y | Ys], [Index | Indices], [X-Index-Y | Rest]) :-
+    sort_pairs(Xs, Ys, Indices, Rest).
+
+extract_sorted_lists([], [], []).
+extract_sorted_lists([X-Index-Y | Rest], [X | XRest], [Index | IdRest]) :-
+    extract_sorted_lists(Rest, XRest, IdRest).

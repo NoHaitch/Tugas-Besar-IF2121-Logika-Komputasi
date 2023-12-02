@@ -1,4 +1,5 @@
 :- dynamic(player/6).
+:- dynamic(totalTroops/2).
 :- dynamic(currentPlayer/1).
 
 initiateGame :-
@@ -28,6 +29,15 @@ takeLocation(Territory):-
             player(NewPlayerId, NewName, _, _, _, _),
             (length(UpdatedEmptyTerritory, 0) ->
                 write('\nSeluruh wilayah telah diambil pemain.\nMemulai pembagian sisa tentara.\n'),
+                forall(
+                    totalTroops(AnyTerritory, ZeroTroops),
+                    (
+                        retract(totalTroops(AnyTerritory, ZeroTroops)),
+                        assertz(totalTroops(AnyTerritory, 1))
+                    )
+                
+                ),
+                write('Seluruh wilayah diberi 1 tentara\n'),
                 format('Giliran ~w untuk meletakkan tentaranya.~n',[NewName]),
                 !   
             ;
@@ -94,15 +104,30 @@ placeTroops(Territory, Troops) :-
         !    
     ).
 
-% placeAutomatic :- 
-%     currentPlayer(PlayerId),
-%     player(PlayerId, Name, _, _, _, _),
-%     findall(Territory, (pemilik(Territory, Name), member(Territory, ListTerritory)), OwnedTerritories),
-%     placeTroopsAutomatically(OwnedTerritories),
-%     format('Automatic troop placement for ~w is done.~n', [Name]),
-%     endInitialTurn.
-%     !.
-
+placeAutomatic :- 
+    currentPlayer(PlayerId),
+    player(PlayerId, Name, _, _, _, _),
+    repeat,
+    playerTroops(PlayerId, TroopsAmount),
+    (   TroopsAmount = 0 ->
+        format('Automatic troop placement for ~w is done.~n', [Name]),
+        endInitialTurn,
+        !, true
+    ;
+        random(1, TroopsAmount, TroopsDistributed),
+        getAllOwnedTerritory(PlayerId, OwnedTerritories),
+        getRandomElement(OwnedTerritories, Territory),
+        totalTroops(Territory, TerritoryTroops),
+        NewTerritoryTroops is (TerritoryTroops + TroopsDistributed),
+        NewTroopsAmount is (TroopsAmount - TroopsDistributed),
+        retract(playerTroops(PlayerId, TroopsAmount)),
+        retract(totalTroops(Territory, TerritoryTroops)),
+        assertz(playerTroops(PlayerId, NewTroopsAmount)),
+        assertz(totalTroops(Territory, NewTerritoryTroops)),
+        format('~w meletakkan ~w tentara di wilayah ~w.~n',[Name, TroopsDistributed, TerritoryName]),
+        fail
+    ).
+    
 /* Input Amount of Player */
 getPlayerAmount :-
     nl,
@@ -169,14 +194,6 @@ sortPlayerOrder(List, IdList, SortedList, SortedId) :-
     reverse(ReversedPairs, FinalSortedPairs),
     extract_sorted_lists(FinalSortedPairs, SortedList, SortedId).
 
-sort_pairs([], _, _, []).
-sort_pairs([X | Xs], [Y | Ys], [Index | Indices], [X-Index-Y | Rest]) :-
-    sort_pairs(Xs, Ys, Indices, Rest).
-
-extract_sorted_lists([], [], []).
-extract_sorted_lists([X-Index-Y | Rest], [X | XRest], [Index | IdRest]) :-
-    extract_sorted_lists(Rest, XRest, IdRest).
-
 /* Starting Troops */
 addStartTroops :-
     playerAmount(PlayerAmount),
@@ -196,6 +213,10 @@ getStartingTroops(PlayerAmount, StartingTroops) :-
         ; PlayerAmount = 3 -> StartingTroops = 16
         ; StartingTroops = 12
     ).
+
+getAllOwnedTerritory(PlayerId, Result) :-
+    player(PlayerId, PlayerName, _, _, _, _),
+    findall(Territory, pemilik(Territory, PlayerName), Result).
 
 /* Display role */
 displayRole(Roles) :-
@@ -235,10 +256,6 @@ displayPlayerOrder(N, PlayerAmount, [H]) :-
     N = PlayerAmount,
     player(H, Name, _, _, _, _),
     write(Name), nl.
-
-initTerritory :-
-    assertz(listTerritory([na1,na2,na3,na4,na5,sa1,sa2,e1,e2,e3,e4,e5,a1,a2,a3,a4,a5,a6,a7,au1,au2,af1,af2,af3])),
-    assertz(emptyTerritory([na1,na2,na3,na4,na5,sa1,sa2,e1,e2,e3,e4,e5,a1,a2,a3,a4,a5,a6,a7,au1,au2,af1,af2,af3])).
 
 endInitialTurn :-
     playerOrder(Order),
