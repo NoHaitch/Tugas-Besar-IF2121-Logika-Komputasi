@@ -108,25 +108,50 @@ placeAutomatic :-
     currentPlayer(PlayerId),
     player(PlayerId, Name, _, _, _, _),
     repeat,
-    playerTroops(PlayerId, TroopsAmount),
-    (   TroopsAmount = 0 ->
-        format('Automatic troop placement for ~w is done.~n', [Name]),
-        endInitialTurn,
-        !, true
-    ;
-        random(1, TroopsAmount, TroopsDistributed),
-        getAllOwnedTerritory(PlayerId, OwnedTerritories),
-        getRandomElement(OwnedTerritories, Territory),
-        totalTroops(Territory, TerritoryTroops),
-        NewTerritoryTroops is (TerritoryTroops + TroopsDistributed),
-        NewTroopsAmount is (TroopsAmount - TroopsDistributed),
-        retract(playerTroops(PlayerId, TroopsAmount)),
-        retract(totalTroops(Territory, TerritoryTroops)),
-        assertz(playerTroops(PlayerId, NewTroopsAmount)),
-        assertz(totalTroops(Territory, NewTerritoryTroops)),
-        format('~w meletakkan ~w tentara di wilayah ~w.~n',[Name, TroopsDistributed, TerritoryName]),
-        fail
+        playerTroops(PlayerId, TroopsAmount),
+        (   
+            TroopsAmount = 0 ->
+                format('Seluruh tentara ~w sudah diletakkan.~n~n',[Name]),
+                endInitialTurn,
+                (currentPlayer(PlayerIdCek), playerTroops(PlayerIdCek, 0) ->
+                    write('\nSeluruh pemain telah meletakkan sisa tentara.\n'),
+                    write('\nMemulai Permainan\n\n'),
+                    !
+                ;
+                    currentPlayer(NewPlayerId),
+                    player(NewPlayerId, NewPlayerName, _, _, _, _),
+                    format('Giliran ~w untuk meletakkan tentaranya.~n',[NewPlayerName]),
+                    !
+                )
+        ;
+            TroopsAmount = 1 ->  % Handle the case where TroopsAmount is 1
+                getAllOwnedTerritory(PlayerId, OwnedTerritories),
+                getRandomElement(OwnedTerritories, Territory),
+                totalTroops(Territory, TerritoryTroops),
+                NewTerritoryTroops is TerritoryTroops + 1,
+                retract(playerTroops(PlayerId, TroopsAmount)),
+                retract(totalTroops(Territory, TerritoryTroops)),
+                asserta(playerTroops(PlayerId, 0)),  % Set TroopsAmount to 0
+                asserta(totalTroops(Territory, NewTerritoryTroops)),
+                locationDetail(Territory, TerritoryName, _, _),
+                format('~w places 1 troop in territory ~w.~n', [Name, TerritoryName]),
+                fail
+        ;
+            random(1, TroopsAmount, TroopsDistributed),
+            getAllOwnedTerritory(PlayerId, OwnedTerritories),
+            getRandomElement(OwnedTerritories, Territory),
+            totalTroops(Territory, TerritoryTroops),
+            NewTerritoryTroops is TerritoryTroops + TroopsDistributed,
+            NewTroopsAmount is TroopsAmount - TroopsDistributed,
+            retract(playerTroops(PlayerId, TroopsAmount)),
+            retract(totalTroops(Territory, TerritoryTroops)),
+            asserta(playerTroops(PlayerId, NewTroopsAmount)),
+            asserta(totalTroops(Territory, NewTerritoryTroops)),
+            locationDetail(Territory, TerritoryName, _, _),
+            format('~w places ~w troops in territory ~w.~n', [Name, TroopsDistributed, TerritoryName]),
+            fail
     ).
+
     
 /* Input Amount of Player */
 getPlayerAmount :-
