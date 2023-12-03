@@ -121,28 +121,27 @@ update_territories([Territory|Rest], NA, E, A, SA, AU, AF, NewNA, NewE, NewA, Ne
 
 checkAUOwnershipTest(PlayerID) :-
     player(PlayerID, PlayerName, _, _, _, _),
-    (pemilik(Territory, PlayerName), australia(Territory), !)
-    .
+    (pemilik(Territory, PlayerName), australia(Territory), !).
+
 checkNAOwnershipTest(PlayerID) :-
     player(PlayerID, PlayerName, _, _, _, _),
-    (pemilik(Territory, PlayerName), northAmerica(Territory), !)
-    .
+    (pemilik(Territory, PlayerName), northAmerica(Territory), !).
+
 checkAFOwnershipTest(PlayerID) :-
     player(PlayerID, PlayerName, _, _, _, _),
-    (pemilik(Territory, PlayerName), africa(Territory), !)
-    .
+    (pemilik(Territory, PlayerName), africa(Territory), !).
+
 checkAOwnershipTest(PlayerID) :-
     player(PlayerID, PlayerName, _, _, _, _),
-    (pemilik(Territory, PlayerName), asia(Territory), !)
-    .
+    (pemilik(Territory, PlayerName), asia(Territory), !).
+
 checkSAOwnershipTest(PlayerID) :-
     player(PlayerID, PlayerName, _, _, _, _),
-    (pemilik(Territory, PlayerName), southAmerica(Territory), !)
-    .
+    (pemilik(Territory, PlayerName), southAmerica(Territory), !).
+
 checkEOwnershipTest(PlayerID) :-
     player(PlayerID, PlayerName, _, _, _, _),
-    (pemilik(Territory, PlayerName), europe(Territory), !)
-    .
+    (pemilik(Territory, PlayerName), europe(Territory), !).
 
 
 % Fungsi untuk menampilkan kondisi pemain
@@ -155,12 +154,90 @@ checkPlayerDetail(Player) :-
                                         (checkAOwnershipTest(Player) -> write('Asia ') ; write('')),
                                         (checkSAOwnershipTest(Player) -> write('Amerika Selatan ') ; write('')),
                                         (checkAUOwnershipTest(Player) -> write('Australia ') ; write('')),
-                                        (checkAFOwnershipTest(Player) -> write('Afrika ') ; write('')),
-    write('Total Wilayah         : '), countTerritories(Name, Result) -> write(Result) ; write(''), nl,
+                                        (checkAFOwnershipTest(Player) -> write('Afrika ') ; write('')), nl,
+    write('Total Wilayah         : '), (countTerritories(Name, Result) -> write(Result) ; write('')), nl,
     write('Total Tentara Aktif   : '), write(TotalActiveTroops), nl,
     write('Total Tentara Tambahan: '), write(TotalAddTroops), nl.
 
-benuaNA(NA) :-
+hitung_territory(PlayerID, ListNA, Jumlah1) :-
+    player(PlayerID, PlayerName, _, _, _, _),
+    findall(Territory, (pemilik(Territory, PlayerName), northAmerica(Territory)), ListNA),
+    length(ListNA, Jumlah1),
+    Jumlah1 \= 0, write('Benua '), write('Amerika Utara '), write(Jumlah1), write('/5'), nl,
+    forall(member(Territory, ListNA), (write(Territory), nl, locationDetail(X, Territory, NameWilayah, Tetangga), 
+    write('Nama              : '), write(NameWilayah), nl, totalTentara(Territory, Tentara), 
+    write('Jumlah tentara    : '), write(Tentara))).
+hitung_territory(PlayerID, ListNA, Jumlah1) :- 
+    player(PlayerID, PlayerName, _, _, _, _),
+    findall(Territory, (pemilik(Territory, PlayerName), northAmerica(Territory)), ListNA),
+    length(ListNA, Jumlah1), Jumlah1 =:= 0.
+
+hitung_territory(PlayerID, ListE, Jumlah2) :-
+    player(PlayerID, PlayerName, _, _, _, _),
+    findall(Territory, (pemilik(Territory, PlayerName), europe(Territory)), ListE),
+    length(ListE, Jumlah2),
+    Jumlah2 \= 0, write('Benua '), write('Eropa '), write(Jumlah2), write('/5'), nl,
+    forall(member(Territory, ListE), (write(Territory), nl, locationDetail(X, Territory, NameWilayah, Tetangga), 
+    write('Nama              : '), write(NameWilayah), nl, totalTentara(Territory, Tentara), 
+    write('Jumlah tentara    : '), write(Tentara))).
+hitung_territory(PlayerID, ListE, Jumlah2) :- 
+    player(PlayerID, PlayerName, _, _, _, _),
+    findall(Territory, (pemilik(Territory, PlayerName), europe(Territory)), ListE),
+    length(ListE, Jumlah2), Jumlah2 =:= 0.
+
+hitung_territory(PlayerID, ListA, Jumlah3) :-
+    player(PlayerID, PlayerName, _, _, _, _),
+    findall(Territory, (pemilik(Territory, PlayerName), asia(Territory)), ListA),
+    length(ListE, Jumlah3),
+    Jumlah3 \= 0, write('Benua '), write('Asia '), write(Jumlah3), write('/7'), nl,
+    forall(member(Territory, ListA), (write(Territory), nl, locationDetail(X, Territory, NameWilayah, Tetangga), 
+    write('Nama              : '), write(NameWilayah), nl, totalTentara(Territory, Tentara), 
+    write('Jumlah tentara    : '), write(Tentara))).
+hitung_territory(PlayerID, ListA, Jumlah3) :- 
+    player(PlayerID, PlayerName, _, _, _, _),
+    findall(Territory, (pemilik(Territory, PlayerName), asia(Territory)), ListA),
+    length(ListE, Jumlah3), Jumlah3 =:= 0.
+
+hitung_territory(PlayerID, ListSA, Jumlah4) :-
+    player(PlayerID, PlayerName, _, _, _, _),
+    findall(Territory, (pemilik(Territory, PlayerName), southAmerica(Territory)), ListSA),
+    length(ListE, Jumlah4),
+    Jumlah4 \= 0, write('Benua '), write('Amerika Selatan '), write(Jumlah4), write('/3'), nl,
+    forall(member(Territory, ListSA), (write(Territory), nl, locationDetail(X, Territory, NameWilayah, Tetangga), 
+    write('Nama              : '), write(NameWilayah), nl, totalTentara(Territory, Tentara), 
+    write('Jumlah tentara    : '), write(Tentara))).
+hitung_territory(PlayerID, ListSA, Jumlah4) :- 
+    player(PlayerID, PlayerName, _, _, _, _),
+    findall(Territory, (pemilik(Territory, PlayerName), southAmerica(Territory)), ListSA),
+    length(ListE, Jumlah4), Jumlah4 =:= 0.
+
+hitung_territory(PlayerID, ListAU, Jumlah5) :-
+    player(PlayerID, PlayerName, _, _, _, _),
+    findall(Territory, (pemilik(Territory, PlayerName), australia(Territory)), ListAU),
+    length(ListAU, Jumlah2),
+    Jumlah5 \= 0, write('Benua '), write('Australia '), write(Jumlah5), write('/5'), nl,
+    forall(member(Territory, ListAU), (write(Territory), nl, locationDetail(X, Territory, NameWilayah, Tetangga), 
+    write('Nama              : '), write(NameWilayah), nl, totalTentara(Territory, Tentara), 
+    write('Jumlah tentara    : '), write(Tentara))).
+hitung_territory(PlayerID, ListAU, Jumlah5) :- 
+    player(PlayerID, PlayerName, _, _, _, _),
+    findall(Territory, (pemilik(Territory, PlayerName), australia(Territory)), ListAU),
+    length(ListAU, Jumlah5), Jumlah5 =:= 0.
+
+hitung_territory(PlayerID, ListAF, Jumlah6) :-
+    player(PlayerID, PlayerName, _, _, _, _),
+    findall(Territory, (pemilik(Territory, PlayerName), africa(Territory)), ListAF),
+    length(ListAF, Jumlah6),
+    Jumlah6 \= 0, write('Benua '), write('Afrika '), write(Jumlah6), write('/5'), nl,
+    forall(member(Territory, ListAF), (write(Territory), nl, locationDetail(X, Territory, NameWilayah, Tetangga), 
+    write('Nama              : '), write(NameWilayah), nl, totalTentara(Territory, Tentara), 
+    write('Jumlah tentara    : '), write(Tentara))).
+hitung_territory(PlayerID, ListAF, Jumlah6) :- 
+    player(PlayerID, PlayerName, _, _, _, _),
+    findall(Territory, (pemilik(Territory, PlayerName), africa(Territory)), ListAF),
+    length(ListAF, Jumlah6), Jumlah6 =:= 0.
+
+/*benuaNA(NA) :-
     count(NA, Value1),
     Value1 \= 0, write('Benua '), write('Amerika Utara '), write(Value1), write('/5'), nl,
     forall(member(Territory, NA), (write(Territory), nl, locationDetail(X, Territory, NameWilayah, Tetangga), 
@@ -206,19 +283,19 @@ benuaAF(AF) :-
     forall(member(Territory, AF), (write(Territory), nl, locationDetail(X, Territory, NameWilayah, Tetangga), 
     write('Nama              : '), write(NameWilayah), nl, totalTentara(Territory, Tentara), 
     write('Jumlah tentara    : '), write(Tentara))).
-benuaAF(AF) :- count(AF, Value6), Value6 =:= 0.
+benuaAF(AF) :- count(AF, Value6), Value6 =:= 0. */
 
 % Fungsi untuk menampilkan wilayah yang dikuasai oleh pemain
 checkPlayerTerritories(Player) :-
-    player(Player, Name, TotalTerritories, TotalActiveTroops, TotalAddTroops, RiskCards),
+    player(PlayerID, PlayerName, TotalTerritories, TotalActiveTroops, TotalAddTroops, RiskCards),
     player_territories(Player, NA, E, A, SA, AU, AF), 
     write('Nama              : '), write(Name), nl, nl,
-    benuaNA(NA), nl,
-    benuaE(E), nl,
-    benuaA(A), nl,
-    benuaSA(SA), nl,
-    benuaAU(AU), nl,
-    benuaAF(AF), nl.
+    hitung_territory(PlayerID, ListNA, Jumlah1), nl,
+    hitung_territory(PlayerID, ListE, Jumlah2), nl,
+    hitung_territory(PlayerID, ListA, Jumlah3), nl,
+    hitung_territory(PlayerID, ListSA, Jumlah4), nl,
+    hitung_territory(PlayerID, ListAU, Jumlah5), nl,
+    hitung_territory(PlayerID, ListAF, Jumlah6), nl.
 
 % Fungsi untuk menampilkan jumlah tentara tambahan pada giliran selanjutnya
 checkIncomingTroops(Player) :-
@@ -274,4 +351,3 @@ kalah(PlayerAttacker, PlayerDefender, TerritoryAttacker, TroopsAttacker, Territo
     write('*Player '), write(PlayerAttacker), write(' telah menguasai dunia*'), nl,
     write('******************************'), nl ; write('')
     ).
-    
