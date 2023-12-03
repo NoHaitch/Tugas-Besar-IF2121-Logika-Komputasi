@@ -19,14 +19,14 @@ countTerritory([_ | Tail], X) :- countTerritory(Tail, Temp),
 draft(CodeTerritory, Value) :- currentPlayer(IDPlayer),
         player(IDPlayer, Name, TotalTerr, TotalActive, TotalAdditional, Risk),
         locationDetail(CodeTerritory, Code, NamaDaerah, Tetangga),
-        (pemilik(Code, Name) ->
+        (pemilik(CodeTerritory, Name) ->
                 format('Player ~w meletakkan ~w tentara tambahan di ~w ~n', [Name, Value, Code]),
                 (Value < TotalAdditional -> 
-                        retract(totalTroops(Code, OldValue)),
+                        retract(totalTroops(CodeTerritory, OldValue)),
                         retract(player(IDPlayer, Name, TotalTerr, TotalActive, TotalAdditional, Risk)),
                         NewValue is OldValue + Value,
                         NewAdditionalTroops is TotalAdditional - Value,
-                        assertz(totalTroops(Code, NewValue)),
+                        assertz(totalTroops(CodeTerritory, NewValue)),
                         assertz(player(IDPlayer, Name, TotalTerr, TotalActive, NewAdditionalTroops, Risk)),
                         format('Tentara total di ~w: ~w ~n', [Code, NewValue]),
                         format('Jumlah Pasukan Tambahan Player ~w: ~w ~n', [Name, Value])

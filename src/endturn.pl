@@ -29,6 +29,7 @@ writeListTail([H|T]) :-
 % bonus_troops('AU', 1).
 % bonus_troops('AF', 2).
 
+
 /* Fungsi untuk mengakhiri giliran */
 endTurn :-
     retractall(numOfMove(_)),
