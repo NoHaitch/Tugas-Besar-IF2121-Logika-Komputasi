@@ -258,10 +258,50 @@ benuaAF(AF) :-
     write('Jumlah tentara    : '), write(Tentara))).
 benuaAF(AF) :- count(AF, Value6), Value6 =:= 0. */
 
+
+appendContinent(Player) :-
+    player(Player, PlayerName, A, B, C, D),
+    player_territories(PlayerName, U, V, W, X, Y, Z),
+    getAllOwnedTerritory(Player, Result),
+    processTerritories(Result, U, V, W, X, Y, Z, NewU, NewV, NewW, NewX, NewY, NewZ),
+    retract(player_territories(PlayerName, U, V, W, X, Y, Z)),
+    assertz(player_territories(PlayerName, NewU, NewV, NewW, NewX, NewY, NewZ)).
+
+processTerritories([], U, V, W, X, Y, Z, U, V, W, X, Y, Z).
+processTerritories([Terr|Rest], U, V, W, X, Y, Z, FinalU, FinalV, FinalW, FinalX, FinalY, FinalZ) :-
+    (   (   member(Terr, ['na1', 'na2', 'na3', 'na4', 'na5']) ->
+            append(U, [Terr], NewU)
+        ;   NewU = U
+    )),
+    (   (   member(Terr, ['a1', 'a2', 'a3', 'a4', 'a5', 'a6', 'a7']) ->
+            append(W, [Terr], NewW)
+        ;   NewW = W
+    )),
+    (   (   member(Terr, ['e1', 'e2', 'e3', 'e4', 'e5']) ->
+            append(V, [Terr], NewV)
+        ;   NewV = V
+    )),
+    (   (   member(Terr, ['sa1', 'sa2']) ->
+            append(X, [Terr], NewX)
+        ;   NewX = X
+    )),
+    (   (   member(Terr, ['au1', 'au2']) ->
+            append(Y, [Terr], NewY)
+        ;   NewY = Y
+    )),
+    (   (   member(Terr, ['af1', 'af2', 'af3']) ->
+            append(Z, [Terr], NewZ)
+        ;   NewZ = Z
+    )),
+    processTerritories(Rest, NewU, NewV, NewW, NewX, NewY, NewZ, FinalU, FinalV, FinalW, FinalX, FinalY, FinalZ).
+
+
+
 % Fungsi untuk menampilkan wilayah yang dikuasai oleh pemain
 checkPlayerTerritories(Player) :-
-    player(PlayerID, PlayerName, TotalTerritories, TotalActiveTroops, TotalAddTroops, RiskCards),
-    player_territories(Player, NA, E, A, SA, AU, AF), 
+    player(Player, PlayerName, TotalTerritories, TotalActiveTroops, TotalAddTroops, RiskCards),
+    appendContinent(Player),
+    player_territories(PlayerName, ListNA, ListE, ListA, ListSA, ListAU, ListAF),
     write('Nama              : '), write(Name), nl, nl,
     hitung_territory(PlayerID, ListNA, Jumlah1), nl,
     hitung_territory(PlayerID, ListE, Jumlah2), nl,
