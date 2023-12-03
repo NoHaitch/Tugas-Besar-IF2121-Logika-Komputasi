@@ -207,7 +207,7 @@ attack :-
         write('Daerah tidak valid. Silahkan input kembali.'), nl,
         fail
     ;
-        write('')
+        write(''), pemilik(AttackerTerritory, Attacker)
     ),
     totalTroops(AttackerTerritory, NumArmy), NumArmy > 1, 
     write('Dalam daerah '), write(AttackerTerritory), write(', Anda memiliki sebanyak '), write(NumArmy), write(' tentara.'), nl,
