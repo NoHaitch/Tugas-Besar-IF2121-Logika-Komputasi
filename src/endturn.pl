@@ -1,6 +1,7 @@
 :- dynamic(player/11).
 :- dynamic(additional_troops/2).
 :- dynamic(bonus_troops/2).
+:- dynamic(numOfMove/2).
 
 writeList([]) :-
     write('').
@@ -30,6 +31,8 @@ writeListTail([H|T]) :-
 
 /* Fungsi untuk mengakhiri giliran */
 endTurn :-
+    retractall(numOfMove(_)),
+    assertz(numOfMove(0)),
     currentPlayer(CurrentPlayerId),
     player(CurrentPlayerId, OldPlayerName, _, _, _, _),
     endInitialTurn,
