@@ -108,20 +108,33 @@ battle(IDPlayer, AttackerTerritory, DefenderTerritory, NumAttacker, NumDefender,
 
     (AttackerTotal > DefenderTotal ->
         format('Player ~w menang! Wilayah ~w sekarang dikuasai oleh Player ~w.~n', [Attacker, DefenderTerritory, Attacker]),
+        repeat,
         write('Silahkan tentukan banyaknya tentara yang menetap di wilayah '), write(DefenderTerritory), write(': '), read(NewArmies),
-        NewArmies > 1, 
-        NewArmies =< NumAttacker,
-        moveArmies(AttackerTerritory, DefenderTerritory, Attacker, Defender, NewArmies),
-        write('Tentara di wilayah '), write(AttackerTerritory), write(': '), write(AttackerArmies - NewArmies), nl,
-        write('Tentara di wilayah '), write(DefenderTerritory), write(': '), write(NewArmies), nl, nl,
-        getAllOwnedTerritory(Defender, Result), length(Result, Len), 
-        (Len =:= 0 -> write('Jumlah wilayah Player ~w 0.~n', [Defender])),
-        (Len =:= 0 -> write('Player ~w keluar dari permainan!~n', [Defender])),
+        (
+            NewArmies > 1, NewArmies =< NumAttacker ->
+            moveArmies(AttackerTerritory, DefenderTerritory, Attacker, Defender, NewArmies), totalTroops(AttackerTerritory, NewNumArmiesAttacker),
+            write('Tentara di wilayah '), write(AttackerTerritory), write(': '), write(NewNumArmiesAttacker), nl,
+            write('Tentara di wilayah '), write(DefenderTerritory), write(': '), write(NewArmies), nl, nl, !
+        ;
+            write('Anda tidak bisa memindahkan lebih dari yang Anda kirim.'), fail
+        ),
+        getAllOwnedTerritory(Defender, Result), 
+        length(Result, Len), 
+        (Len =:= 0 ->  
+            format('Jumlah wilayah Player ~w 0.~n', [Defender]),
+            format('Player ~w keluar dari permainan!~n', [Defender])
+        ;
+            write('')
+        ),
         getAllOwnedTerritory(Attacker, Results), length(Results, Lens),
-        (Lens =:= 25 -> write('Jumlah wilayah Player ~w 0.~n', [Attacker])),
-        (Lens =:= 25 -> write('******************************'), nl,
-        write('*Player ~w'), [Attacker], write(' telah menguasai dunia*'), nl,
-        write('******************************'), nl ; write(''))
+        (Lens =:= 25 ->  
+            format('Jumlah wilayah Player ~w 0.~n', [Attacker]),
+            write('******************************'), nl,
+            format(('*Player ~w'), [Attacker]), write(' telah menguasai dunia*'), nl,
+            write('******************************'), nl ; write('')
+        ;
+            write('')
+        )
     ;
         format('Player ~w kalah! Sayang sekali penyerangan Anda gagal. Seluruh tentara yang dikirim hangus.~n', [Attacker]), 
         retract(totalTroops(AttackerTerritory, NumArmy)),
