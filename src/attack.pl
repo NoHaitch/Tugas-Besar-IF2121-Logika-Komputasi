@@ -113,7 +113,15 @@ battle(IDPlayer, AttackerTerritory, DefenderTerritory, NumAttacker, NumDefender,
         NewArmies =< NumAttacker,
         moveArmies(AttackerTerritory, DefenderTerritory, Attacker, Defender, NewArmies),
         write('Tentara di wilayah '), write(AttackerTerritory), write(': '), write(AttackerArmies - NewArmies), nl,
-        write('Tentara di wilayah '), write(DefenderTerritory), write(': '), write(NewArmies), nl
+        write('Tentara di wilayah '), write(DefenderTerritory), write(': '), write(NewArmies), nl, nl,
+        getAllOwnedTerritory(Defender, Result), length(Result, Len), 
+        (Len =:= 0 -> write('Jumlah wilayah Player ~w 0.~n', [Defender])),
+        (Len =:= 0 -> write('Player ~w keluar dari permainan!~n', [Defender])),
+        getAllOwnedTerritory(Attacker, Results), length(Results, Lens),
+        (Lens =:= 25 -> write('Jumlah wilayah Player ~w 0.~n', [Attacker])),
+        (Lens =:= 25 -> write('******************************'), nl,
+        write('*Player ~w'), [Attacker], write(' telah menguasai dunia*'), nl,
+        write('******************************'), nl ; write(''))
     ;
         format('Player ~w kalah! Sayang sekali penyerangan Anda gagal. Seluruh tentara yang dikirim hangus.~n', [Attacker]), 
         retract(totalTroops(AttackerTerritory, NumArmy)),
