@@ -263,7 +263,7 @@ appendContinent(Player) :-
     player(Player, PlayerName, A, B, C, D),
     player_territories(PlayerName, U, V, W, X, Y, Z),
     getAllOwnedTerritory(Player, Result),
-    processTerritories(Result, U, V, W, X, Y, Z, NewU, NewV, NewW, NewX, NewY, NewZ),
+    processTerritories(Result, M, N, O, P, Q, R, NewU, NewV, NewW, NewX, NewY, NewZ),
     retract(player_territories(PlayerName, U, V, W, X, Y, Z)),
     assertz(player_territories(PlayerName, NewU, NewV, NewW, NewX, NewY, NewZ)).
 
@@ -292,7 +292,7 @@ processTerritories([Terr|Rest], U, V, W, X, Y, Z, FinalU, FinalV, FinalW, FinalX
     (   (   member(Terr, ['af1', 'af2', 'af3']) ->
             append(Z, [Terr], NewZ)
         ;   NewZ = Z
-    )),
+    )), !,
     processTerritories(Rest, NewU, NewV, NewW, NewX, NewY, NewZ, FinalU, FinalV, FinalW, FinalX, FinalY, FinalZ).
 
 funcCheckTerr(Player, Array) :-
@@ -322,7 +322,7 @@ checkPlayerTerritories(Player) :-
 checkIncomingTroops(Player) :-
     player(Player, Name, TotalTerritories, TotalActiveTroops, TotalAddTroops, RiskCards),
     appendContinent(Player),
-    player_territories(PlayerName, ListNA, ListE, ListA, ListSA, ListAU, ListAF),
+    player_territories(Name, ListNA, ListE, ListA, ListSA, ListAU, ListAF),
     TotalAdditionalTroops is TotalTerritories // 2,
     write('Nama                                    : '), write(Name), nl,
     write('Total wilayah                           : '), write(TotalTerritories), nl,

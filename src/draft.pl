@@ -18,7 +18,7 @@ countTerritory([_ | Tail], X) :- countTerritory(Tail, Temp),
 
 draft(CodeTerritory, Value) :- currentPlayer(IDPlayer),
         player(IDPlayer, Name, TotalTerr, TotalActive, TotalAdditional, Risk),
-        locationDetail(Code, CodeTerritory, NamaDaerah, Tetangga),
+        locationDetail(CodeTerritory, Code, NamaDaerah, Tetangga),
         (pemilik(Code, Name) ->
                 format('Player ~w meletakkan ~w tentara tambahan di ~w ~n', [Name, Value, Code]),
                 (Value < TotalAdditional -> 

@@ -45,8 +45,9 @@ endTurn :-
     NewTotalTroops is (TotalTroops + TotalAdditionalTroops),
     retract(playerTroops(NextPlayerId, TotalTroops)),
     assertz(playerTroops(NextPlayerId, NewTotalTroops)),
-    format('Player ~w mendapatkan ~w tentara tambahan.~n~n', [PlayerName, TotalAdditionalTroops]),
-    !.
+    retract(player(NextPlayerId, PlayerName, TotalTerritories, TotalActiveTroops, TotalAddTroops, Risk)),
+    assertz(player(NextPlayerId, PlayerName, TotalTerritories, TotalActiveTroops, NewTotalTroops, Risk)),
+    format('Player ~w mendapatkan ~w tentara tambahan.~n~n', [PlayerName, TotalAdditionalTroops]).
 
 getAdditionalTroops(Result) :-
     currentPlayer(PlayerId),
