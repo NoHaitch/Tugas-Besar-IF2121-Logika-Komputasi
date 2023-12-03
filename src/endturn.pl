@@ -42,10 +42,11 @@ endTurn :-
     format('Sekarang giliran Player ~w!~n', [PlayerName]),
     playerTroops(NextPlayerId, TotalTroops),
     getAdditionalTroops(TotalAdditionalTroops),
-    NewTotalTroops is (TotalTroops - TotalAdditionalTroops),
+    NewTotalTroops is (TotalTroops + TotalAdditionalTroops),
     retract(playerTroops(PlayerId, TotalTroops)),
     assertz(playerTroops(PlayerId, NewTotalTroops)),
-    format('Player ~w mendapatkan ~w tentara tambahan.~n~n', [PlayerName, TotalAdditionalTroops]).
+    format('Player ~w mendapatkan ~w tentara tambahan.~n~n', [PlayerName, TotalAdditionalTroops]),
+    !.
 
 getAdditionalTroops(Result) :-
     currentPlayer(PlayerId),
