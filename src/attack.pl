@@ -114,7 +114,7 @@ battle(IDPlayer, AttackerTerritory, DefenderTerritory, NumAttacker, NumDefender,
             NewArmies > 1, NewArmies =< NumAttacker ->
             moveArmies(AttackerTerritory, DefenderTerritory, Attacker, Defender, NewArmies), totalTroops(AttackerTerritory, NewNumArmiesAttacker),
             write('Tentara di wilayah '), write(AttackerTerritory), write(': '), write(NewNumArmiesAttacker), nl,
-            write('Tentara di wilayah '), write(DefenderTerritory), write(': '), write(NewArmies), nl, nl
+            write('Tentara di wilayah '), write(DefenderTerritory), write(': '), write(NewArmies), nl, nl, !
         ;
             write('Anda tidak bisa memindahkan lebih dari yang Anda kirim.'), fail
         ),
