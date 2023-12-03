@@ -21,7 +21,7 @@ draft(CodeTerritory, Value) :- currentPlayer(IDPlayer),
         locationDetail(CodeTerritory, Code, NamaDaerah, Tetangga),
         (pemilik(CodeTerritory, Name) ->
                 format('Player ~w meletakkan ~w tentara tambahan di ~w ~n', [Name, Value, Code]),
-                (Value < TotalAdditional -> 
+                (Value =< TotalAdditional ->
                         retract(totalTroops(CodeTerritory, OldValue)),
                         retract(player(IDPlayer, Name, TotalTerr, TotalActive, TotalAdditional, Risk)),
                         NewValue is OldValue + Value,
