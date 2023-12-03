@@ -114,7 +114,7 @@ battle(IDPlayer, AttackerTerritory, DefenderTerritory, NumAttacker, NumDefender,
             NewArmies > 1, NewArmies =< NumAttacker ->
             moveArmies(AttackerTerritory, DefenderTerritory, Attacker, Defender, NewArmies), totalTroops(AttackerTerritory, NewNumArmiesAttacker),
             write('Tentara di wilayah '), write(AttackerTerritory), write(': '), write(NewNumArmiesAttacker), nl,
-            write('Tentara di wilayah '), write(DefenderTerritory), write(': '), write(NewArmies), nl, nl, !
+            write('Tentara di wilayah '), write(DefenderTerritory), write(': '), write(NewArmies), nl, nl, endTurn, !
         ;
             write('Anda tidak bisa memindahkan lebih dari yang Anda kirim.'), fail
         ),
@@ -141,7 +141,7 @@ battle(IDPlayer, AttackerTerritory, DefenderTerritory, NumAttacker, NumDefender,
         NewNumArmy is NumArmy - NumAttacker,
         asserta(totalTroops(AttackerTerritory, NewNumArmy)),
         write('Tentara di wilayah '), write(AttackerTerritory), write(': '), write(NewNumArmy), nl,
-        write('Tentara di wilayah '), write(DefenderTerritory), write(': '), write(NumDefender), nl
+        write('Tentara di wilayah '), write(DefenderTerritory), write(': '), write(NumDefender), endTurn, nl
     ).
 
 throwDice(0, [], Owner).
@@ -252,5 +252,4 @@ attack :-
     totalTroops(DefenderTerritory, NumDefender),
 
     write('Perang telah dimulai.'), nl,
-    battle(IDPlayer, AttackerTerritory, DefenderTerritory, NumAttacker, NumDefender, Defender),
-    endTurn.
+    battle(IDPlayer, AttackerTerritory, DefenderTerritory, NumAttacker, NumDefender, Defender).
