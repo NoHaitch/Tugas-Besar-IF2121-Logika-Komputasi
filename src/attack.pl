@@ -203,8 +203,7 @@ attack :-
     repeat,
     write('Pilihlah daerah yang ingin Anda mulai untuk melakukan penyerangan: '),
     read(AttackerTerritory),
-    pemilik(AttackerTerritory, Owner),
-    (   Owner \== Attacker ->
+    (   \+pemilik(AttackerTerritory, Attacker) ->
         write('Daerah tidak valid. Silahkan input kembali.'), nl,
         fail
     ;
