@@ -41,18 +41,17 @@ endTurn :-
     format('Player ~w mengakhiri giliran.~n~n', [OldPlayerName]),
     format('Sekarang giliran Player ~w!~n', [PlayerName]),
     playerTroops(NextPlayerId, TotalTroops),
-    NewTotalTroops = (TotalTroops - TotalAdditionalTroops),
     getAdditionalTroops(TotalAdditionalTroops),
+    NewTotalTroops is (TotalTroops - TotalAdditionalTroops),
     retract(playerTroops(PlayerId, TotalTroops)),
     assertz(playerTroops(PlayerId, NewTotalTroops)),
-    TotalAdd = (TotalBonusTroops + TotalAdditionalTroops),
     format('Player ~w mendapatkan ~w tentara tambahan.~n~n', [PlayerName, TotalAdditionalTroops]).
 
 getAdditionalTroops(Result) :-
     currentPlayer(PlayerId),
     player(PlayerId, Name, TotalTerritories, _, _, Risk),
     (Risk =:= 6 -> format('Player ~w terdampak SUPPLY CHAIN ISSUE! ~nPlayer ~w tidak akan mendapat tentara tambahan~n', [Name, Name]), Result is 0 ;
-    Risk =:= 3 ->
+        Risk =:= 3 ->
         Result1 is TotalTerritories // 2,
         (checkNAOwnership -> Result2 is Result1 + 3 ; Result2 is Result1),
         (checkEOwnership -> Result3 is Result2 + 3 ; Result3 is Result2),
@@ -61,7 +60,8 @@ getAdditionalTroops(Result) :-
         (checkAUOwnership -> Result6 is Result5 + 1 ; Result6 is Result5),
         (checkAFOwnership -> Result7 is Result6 + 2 ; Result7 is Result6),
         Result is Result7 * 2,
-         format('Player ~w mendapatkan AUXILIARY TROOPS!~n', [Name]);
+        format('Player ~w mendapatkan AUXILIARY TROOPS!~n', [Name])
+    ;
     Result1 is TotalTerritories // 2,
     (checkNAOwnership -> Result2 is Result1 + 3 ; Result2 is Result1),
     (checkEOwnership -> Result3 is Result2 + 3 ; Result3 is Result2),
