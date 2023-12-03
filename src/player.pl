@@ -295,20 +295,28 @@ processTerritories([Terr|Rest], U, V, W, X, Y, Z, FinalU, FinalV, FinalW, FinalX
     )),
     processTerritories(Rest, NewU, NewV, NewW, NewX, NewY, NewZ, FinalU, FinalV, FinalW, FinalX, FinalY, FinalZ).
 
-
+funcCheckTerr(Player, Array) :-
+    forall(member(Terr, Array),
+    (
+        (locationDetail(Terr, Code, NameWilayah, Tetangga),
+        write(Code), nl,
+        format('Nama              : ~w', [NameWilayah]), nl,
+        totalTroops(Terr, Tentara),
+        format('Jumlah tentara    : ~w', [Tentara]), nl)
+    )).
 
 % Fungsi untuk menampilkan wilayah yang dikuasai oleh pemain
 checkPlayerTerritories(Player) :-
     player(Player, PlayerName, TotalTerritories, TotalActiveTroops, TotalAddTroops, RiskCards),
     appendContinent(Player),
     player_territories(PlayerName, ListNA, ListE, ListA, ListSA, ListAU, ListAF),
-    write('Nama              : '), write(Name), nl, nl,
-    hitung_territory(PlayerID, ListNA, Jumlah1), nl,
-    hitung_territory(PlayerID, ListE, Jumlah2), nl,
-    hitung_territory(PlayerID, ListA, Jumlah3), nl,
-    hitung_territory(PlayerID, ListSA, Jumlah4), nl,
-    hitung_territory(PlayerID, ListAU, Jumlah5), nl,
-    hitung_territory(PlayerID, ListAF, Jumlah6), nl.
+    write('Nama              : '), write(PlayerName), nl, nl,
+    length(ListNA, Len), (Len \= 0 -> format('Benua Amerika Utara (~w/5)', [ Len]), nl, funcCheckTerr(Player, ListNA), nl ; write('')),
+    length(ListE, Len2), (Len2 \= 0 -> format('Benua Eropa (~w/5)', [ Len2]), nl, funcCheckTerr(Player, ListE), nl ; write('')),
+   length(ListA, Len3), (Len3 \= 0 -> format('Benua Asia (~w/7)', [Len3]), nl, funcCheckTerr(Player, ListA), nl ; write('')),
+    length(ListSA, Len4), (Len4 \= 0 -> format('Benua Afrika (~w/3)', [ Len4]), nl, funcCheckTerr(Player, ListSA), nl ; write('')),
+    length(ListAU, Len5), (Len5 \= 0 -> format('Benua Australia (~w/2)', [Len5]), nl, funcCheckTerr(Player, ListAU), nl ; write('')),
+    length(ListAF, Len6), (Len6 \= 0 -> format('Benua Afrika (~w/3)', [Len6]), nl, funcCheckTerr(Player, ListAF), nl ; write('')).
 
 % Fungsi untuk menampilkan jumlah tentara tambahan pada giliran selanjutnya
 checkIncomingTroops(Player) :-
