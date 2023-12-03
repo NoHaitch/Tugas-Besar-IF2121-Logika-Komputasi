@@ -313,39 +313,35 @@ checkPlayerTerritories(Player) :-
     write('Nama              : '), write(PlayerName), nl, nl,
     length(ListNA, Len), (Len \= 0 -> format('Benua Amerika Utara (~w/5)', [ Len]), nl, funcCheckTerr(Player, ListNA), nl ; write('')),
     length(ListE, Len2), (Len2 \= 0 -> format('Benua Eropa (~w/5)', [ Len2]), nl, funcCheckTerr(Player, ListE), nl ; write('')),
-   length(ListA, Len3), (Len3 \= 0 -> format('Benua Asia (~w/7)', [Len3]), nl, funcCheckTerr(Player, ListA), nl ; write('')),
+    length(ListA, Len3), (Len3 \= 0 -> format('Benua Asia (~w/7)', [Len3]), nl, funcCheckTerr(Player, ListA), nl ; write('')),
     length(ListSA, Len4), (Len4 \= 0 -> format('Benua Afrika (~w/3)', [ Len4]), nl, funcCheckTerr(Player, ListSA), nl ; write('')),
     length(ListAU, Len5), (Len5 \= 0 -> format('Benua Australia (~w/2)', [Len5]), nl, funcCheckTerr(Player, ListAU), nl ; write('')),
     length(ListAF, Len6), (Len6 \= 0 -> format('Benua Afrika (~w/3)', [Len6]), nl, funcCheckTerr(Player, ListAF), nl ; write('')).
 
 % Fungsi untuk menampilkan jumlah tentara tambahan pada giliran selanjutnya
 checkIncomingTroops(Player) :-
-    player(Player, Name, TotalTerritories, TotalActiveTroops, TotalAddTroops, Risk),
-    player_territories(Player, NA, E, A, SA, AU, AF),
-    findall(BonusTroops,
-            (additional_troops(Player, Continent, Bonus),
-             countPlayerTerritories(Player, Continent, PlayerTerritories),
-             BonusTroops is PlayerTerritories // 3 + Bonus),
-            BonusTroopsList),
-    sum_list(BonusTroopsList, TotalBonusTroops),
+    player(Player, Name, TotalTerritories, TotalActiveTroops, TotalAddTroops, RiskCards),
+    appendContinent(Player),
+    player_territories(PlayerName, ListNA, ListE, ListA, ListSA, ListAU, ListAF),
+    TotalAdditionalTroops is TotalTerritories // 2,
     write('Nama                                    : '), write(Name), nl,
     write('Total wilayah                           : '), write(TotalTerritories), nl,
     write('Jumlah tentara tambahan dari wilayah    : '), write(TotalAdditionalTroops), nl,
-    (count(NA, 5), 
+    (length(ListNA, Len), Len \= 0 ->
     write('Bonus Benua Amerika Utara               : '), write('3'), nl ; true),
-    (count(E, 5), 
+    (length(ListE, Len2), Len2 \= 0 -> 
     write('Bonus Benua Eropa                       : '), write('3'), nl ; true),
-    (count(A, 7), 
+    (length(ListA, Len3), Len3 \= 0 ->
     write('Bonus Benua Asia                        : '), write('5'), nl ; true),
-    (count(SA, 3), 
+    (length(ListSA, Len4), Len4 \= 0 ->
     write('Bonus Benua Amerika Selatan             : '), write('2'), nl ; true),
-    (count(AU, 2), 
+    (length(ListAU, Len5), Len5 \= 0 ->
     write('Bonus Benua Australia                   : '), write('1'), nl ; true),
-    (count(AF, 3), 
+    (length(ListAF, Len6), Len6 \= 0 ->
     write('Bonus Benua Afrika                      : '), write('2'), nl ; true), 
     write('Total Tentara Tambahan                  : '), write(TotalAddTroops).
 
-% Fungsi untuk menghitung jumlah wilayah pemain di suatu benua
+/*% Fungsi untuk menghitung jumlah wilayah pemain di suatu benua
 countPlayerTerritories(Player, Continent, Count) :-
     findall(Territory, (player_territory(Player, Territory), territory(Territory, _, _, _)), Territories),
     findall(Territory, (member(Territory, Territories), member(Continent, TerritoryContinents), Continent == Continent), FilteredTerritories),
@@ -372,4 +368,4 @@ kalah(PlayerAttacker, PlayerDefender, TerritoryAttacker, TroopsAttacker, Territo
     write('*Player '), write(PlayerAttacker), write(' telah menguasai dunia*'), nl,
     write('******************************'), nl ; write('')
     ).
-    
+*/    
