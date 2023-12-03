@@ -75,48 +75,6 @@ countTerritories(Name, Result) :-
     findall(Area, pemilik(Area, Name), OwnedAreas),
     length(OwnedAreas, Result).
 
-/*
-groupTerritories(Player) :-
-    player_territories(Player, A, B, C, D, E, F),
-    retract(player_territories(Player, A, B, C, D, E, F)),
-    player(ID, Player, TotalTerritories, TotalActiveTroops, TotalAddTroops, RiskCards),
-    getAllOwnedTerritory(ID, Territories),
-    update_territories(Territories, [], [], [], [], [], [], NewNA, NewE, NewA, NewSA, NewAU, NewAF),
-    assertz(player_territories(Player, NewA, NewSA, NewAU, NewNA, NewE, NewAF)).
-
-update_territories([], NA, E, A, SA, AU, AF, NA, E, A, SA, AU, AF).
-update_territories([Territory|Rest], NA, E, A, SA, AU, AF, NewNA, NewE, NewA, NewSA, NewAU, NewAF) :-
-    pemilik(Territory, Player),
-    (
-        (northAmerica(Territory) -> append(NA, [Territory], TempNA), NewNA = TempNA),
-        (asia(Territory) -> append(A, [Territory], TempA), NewA = TempA,
-        (europe(Territory) -> append(E, [Territory], TempE), NewE = TempE),
-        (australia(Territory) -> append(AU, [Territory], TempAU), NewAU = TempAU ),
-        (africa(Territory) -> append(AF, [Territory], TempAF), NewAF = TempAF ),
-        (southAmerica(Territory) -> append(SA, [Territory], TempSA), NewSA = TempSA)
-    ),
-    update_territories(Rest, NewNA, NewE, NewA, NewSA, NewAU, NewAF, NewNA, NewE, NewA, NewSA, NewAU, NewAF). */
-
-    /*
-    forall(member(Territory, Territories),
-        (forall(
-            ((australia(Territory), pemilik(Territory, Player)), append(AU, [Territory], AU))
-    );
-        forall(
-            ((africa(Territory), pemilik(Territory, Player)), append(AF, [Territory], AF))
-    );
-        forall(
-            ((asia(Territory), pemilik(Territory, Player)), append(A, [Territory], A))
-    );
-    forall(
-    ((europe(Territory), pemilik(Territory, Player)), append(E, [Territory], E))
-    );
-    forall(
-    ((northamerica(Territory), pemilik(Territory, Player)), append(NA, [Territory], NA))
-    );
-    forall(
-    ((southamerica(Territory), pemilik(Territory, Player)), append(SA, [Territory], SA))
-    ))), */
 
 
 checkAUOwnershipTest(PlayerID) :-
