@@ -47,7 +47,18 @@ endTurn :-
 
 getAdditionalTroops(Result) :-
     currentPlayer(PlayerId),
-    player(PlayerId, Name, TotalTerritories, _, _, _),
+    player(PlayerId, Name, TotalTerritories, _, _, Risk),
+    (Risk =:= 6 -> format('Player ~w terdampak SUPPLY CHAIN ISSUE! ~nPlayer ~w tidak akan mendapat tentara tambahan~n', [Name, Name]), Result is 0 ;
+    Risk =:= 3 ->
+        Result1 is TotalTerritories // 2,
+        (checkNAOwnership -> Result2 is Result1 + 3 ; Result2 is Result1),
+        (checkEOwnership -> Result3 is Result2 + 3 ; Result3 is Result2),
+        (checkAOwnership -> Result4 is Result3 + 5 ; Result4 is Result3),
+        (checkSAOwnership -> Result5 is Result4 + 2 ; Result5 is Result4),
+        (checkAUOwnership -> Result6 is Result5 + 1 ; Result6 is Result5),
+        (checkAFOwnership -> Result7 is Result6 + 2 ; Result7 is Result6),
+        Result is Result7 * 2,
+         format('Player ~w mendapatkan AUXILIARY TROOPS!~n', [Name]);
     Result1 is TotalTerritories // 2,
     (checkNAOwnership -> Result2 is Result1 + 3 ; Result2 is Result1),
     (checkEOwnership -> Result3 is Result2 + 3 ; Result3 is Result2),
@@ -55,7 +66,7 @@ getAdditionalTroops(Result) :-
     (checkSAOwnership -> Result5 is Result4 + 2 ; Result5 is Result4),
     (checkAUOwnership -> Result6 is Result5 + 1 ; Result6 is Result5),
     (checkAFOwnership -> Result7 is Result6 + 2 ; Result7 is Result6),
-    Result is Result7.
+    Result is Result7).
 
 checkAUOwnership:-
     currentPlayer(CurrentPlayer),
