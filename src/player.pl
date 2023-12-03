@@ -188,7 +188,7 @@ hitung_territory(PlayerID, ListAU, Jumlah5) :-
     player(PlayerID, PlayerName, _, _, _, _),
     findall(Territory, (pemilik(Territory, PlayerName), australia(Territory)), ListAU),
     length(ListAU, Jumlah2),
-    Jumlah5 \= 0, write('Benua '), write('Australia '), write(Jumlah5), write('/5'), nl,
+    Jumlah5 \= 0, write('Benua '), write('Australia '), write(Jumlah5), write('/2'), nl,
     forall(member(Territory, ListAU), (write(Territory), nl, locationDetail(X, Territory, NameWilayah, Tetangga),
     write('Nama              : '), write(NameWilayah), nl, totalTentara(Territory, Tentara),
     write('Jumlah tentara    : '), write(Tentara))).
@@ -201,7 +201,7 @@ hitung_territory(PlayerID, ListAF, Jumlah6) :-
     player(PlayerID, PlayerName, _, _, _, _),
     findall(Territory, (pemilik(Territory, PlayerName), africa(Territory)), ListAF),
     length(ListAF, Jumlah6),
-    Jumlah6 \= 0, write('Benua '), write('Afrika '), write(Jumlah6), write('/5'), nl,
+    Jumlah6 \= 0, write('Benua '), write('Afrika '), write(Jumlah6), write('/3'), nl,
     forall(member(Territory, ListAF), (write(Territory), nl, locationDetail(X, Territory, NameWilayah, Tetangga),
     write('Nama              : '), write(NameWilayah), nl, totalTentara(Territory, Tentara),
     write('Jumlah tentara    : '), write(Tentara))).
