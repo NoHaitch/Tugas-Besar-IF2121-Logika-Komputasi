@@ -27,26 +27,26 @@ riskCard(dis, Player) :- disease(Player).
 riskCard(sup, Player) :- supplychain(Player).
 
 
-ceasefire(P) :-
+ceasefire(ID) :-
     retract(player(ID, Name, TotalTerritories, TotalActiveTroops, TotalAddTroops, RiskCard)),
     assertz(player(ID, Name, TotalTerritories, TotalActiveTroops, TotalAddTroops, 1)),
     format('Player ~w mendapatkan risk card CEASEFIRE ORDER.~nHingga giliran berikutnya, wilayah pemain tidak dapat diserang oleh lawan.~n', [Name]).
      /* Player menjadi kebal untuk satu putaran */
 
 /* Semua hasil lemparan dadu player untuk turn selanjutnya selalu 6*/
-superSoldier(P) :- 
+superSoldier(ID) :-
     retract(player(ID, Name, TotalTerritories, TotalActiveTroops, TotalAddTroops, RiskCard)),
     assertz(player(ID, Name, TotalTerritories, TotalActiveTroops, TotalAddTroops, 2)),
     format('Player ~w mendapatkan risk card SUPER SOLDIER SERUM.~nHingga giliran berikutnya, semua hasil lemparan dadu saat penyerangan dan pertahanan akan bernilai 6.~n', [Name]).
 
 /* Jumlah tentara yang ditambahkan menjadi 2x kali lipatnya */
-auxiliary(P) :- 
+auxiliary(ID) :-
     retract(player(ID, Name, TotalTerritories, TotalActiveTroops, TotalAddTroops, RiskCard)),
     assertz(player(ID, Name, TotalTerritories, TotalActiveTroops, TotalAddTroops, 3)),
     format('Player ~w mendapatkan risk card AUXILIARY TROOPS.~nPada giliran berikutnya, tentara tambahan yang didapatkan pemain akan bernilai 2 kali lipat.~n', [Name]).
 
 /* Salah satu wilayah yang dikuasai akan menjadi milik lawan (acak) */
-rebelion(P) :- 
+rebelion(ID) :-
     retract(player(ID, Name, TotalTerritories, TotalActiveTroops, TotalAddTroops, RiskCard)),
     assertz(player(ID, Name, TotalTerritories, TotalActiveTroops, TotalAddTroops, 4)),
     format('Player ~w mendapatkan risk card REBELION.~nSalah satu wilayah acak pemain akan berpindah kekuasaan menjadi milik lawan.~n', [Name]),
@@ -65,13 +65,13 @@ rebelion(P) :-
 
 
 /* Semua hasil lemparan dadu player untuk turn selanjutnya akan selalu bernilai 1 */
-disease(P) :- 
+disease(ID) :-
     retract(player(ID, Name, TotalTerritories, TotalActiveTroops, TotalAddTroops, RiskCard)),
     assertz(player(ID, Name, TotalTerritories, TotalActiveTroops, TotalAddTroops, 5)),
     format('Player ~w mendapatkan risk card DISEASE.~nHingga giliran berikutnya, semua hasil lemparan dadu akan bernilai 1.~n', [Name]).
 
 /* Jumlah tentara tambahan akan 0 di turn selanjutnya */
-supplychain(P) :- 
+supplychain(ID) :-
     retract(player(ID, Name, TotalTerritories, TotalActiveTroops, TotalAddTroops, RiskCard)),
     assertz(player(ID, Name, TotalTerritories, TotalActiveTroops, TotalAddTroops, 6)),
     format('Player ~w mendapatkan risk card SUPPLY CHAIN.~nPada giliran berikutnya, pemain tidak akan mendapat tentara tambahan.~n', [Name]).
